@@ -1,0 +1,87 @@
+html {
+    height: 100% !important;
+}
+
+body {
+    width: 100%;
+    height: 100% !important;
+    background: #383d41;
+}
+
+.tempA {
+    width: 100%;
+    height: 100%;
+}
+
+.root {
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    text-align: center;
+    text-transform: uppercase;
+    background-color: #2a354b;
+}
+
+.header {
+    width: 100%;
+    height: 50px;
+    background: #2a354b;
+}
+
+.contents_row {
+    width: 100%;
+}
+
+.left_side {
+    width: 80px;
+    background: #343d4e;
+}
+
+.chart_container {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.right_side {
+    width: 120px;
+    font-size: 10px;
+    background: #2a354b;
+}
+
+.footer {
+    width: 100%;
+    height: 50px;
+    background: #343d4e;
+}
+
+.order_info {
+    background-color: #343d4e;
+}
+
+.side_btn {
+    font-size: 30px;
+    color: #8e929a;
+}
+
+order_btn {
+    font-size: 20px;
+    color: #8e929a;
+}
+
+.deposit_btn {
+    width: 100px;
+    margin-right: 5px;
+}
+
+.acc_set_text {
+    font-size: 10px;
+}
+
+.typeSelect {
+    color: #8e929a;
+}
+
+.chart_option {
+    font-weight: 900;
+}
