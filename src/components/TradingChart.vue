@@ -4,8 +4,8 @@
 
 <script>
     /* eslint-disable */
-
     import Anychart from 'anychart'
+    import stockDataHelper from "../common/stockData";
 
     export default {
         props: ['Anychart', 'testData'],
@@ -42,94 +42,20 @@
                 });
         },
         methods: {
+
             switchType() {
                 let select = document.getElementById("typeSelect");
                 this.areaSeries.seriesType(select.value);
-            },
-            makeVerticalLine(plot, datetime, gap = 30) {
-                let d1 = new Date(datetime);
-                let d2 = new Date(datetime);
-
-                console.log('[KES] makeVerticalLine time:', datetime);
-
-                d2 = d2.setSeconds(d2.getSeconds() + gap);
-
-                plot.annotations().removeAllAnnotations();
-
-
-                let annotation = plot.annotations();
-
-                let v1 = annotation.verticalLine({
-                        xAnchor: d1,
-                        stroke: {
-                            thickness: 1,
-                            color: 'lightblue',
-                            dash: '3 2'
-                        }
-                    }
-                ).allowEdit(false);
-
-                let v2 = annotation.verticalLine({
-                        xAnchor: d2,
-                        stroke: {
-                            thickness: 1,
-                            color: 'red',
-                            dash: '3 2'
-                        }
-                    }
-                ).allowEdit(false);
-
-                return {
-                    inputLimitTime: typeof (d1) != 'number' ? d1.getTime() : d1,
-                    calcualteTime: typeof (d2) != 'number' ? d2.getTime() : d2
-                }
-            },
-            makeNextDate(lastDate, count = 90, gap = 1) {
-                //let t1 = new Date()
-                let t1 = new Date(lastDate);
-
-                let end = 238;
-                let start = 220;
-                //let gap = 1;
-                let data = [];
-                for (let i = 0; i < count; i++) {
-                    let date = t1.setSeconds(t1.getSeconds() + gap);
-                    //console.log(`i=${i} d=${t1}`);
-                    data.push([date, , , , ,]);
-                }
-                return data;
-            },
-            makeOHLC() {
-                let t1 = new Date()
-                t1.setDate(t1.getDate() - 1);
-
-                let end = 238;
-                let start = 220;
-
-                let data = [];
-                for (let i = 0; i < 100; i++) {
-                    let date = t1.setSeconds(t1.getSeconds() + 1);
-                    //console.log(`i=${i} d=${t1}`);
-
-                    let open = start + Math.random();
-                    let high = open + Math.random();
-                    let low = open + high - open;
-                    let close = open;
-                    let volume = 0;
-
-                    data.push([date, open, high, low, close, volume]);
-                }
-                return data;
             },
             init() {
                 if (!this.chart) {
                     let _Anychart = this.Anychart || Anychart;
                     _Anychart.theme("darkBlue");
-                    this._data = this.makeOHLC();
+                    this._data = stockDataHelper.makeOHLC();
                     console.log(`makeOHLC ${this._data}`)
                     this._firstStreamTime = this._data[0][0];
                     this._lastStreamTime = this._data[this._data.length - 1][0];
-                    let _next = this.makeNextDate(this._lastStreamTime);
+                    let _next = stockDataHelper.makeNextDate(this._lastStreamTime);
                     console.log(`=======makeNextDate: ${_next}`);
 
                     this._lastVerticalLineTime = _next[_next.length - 1][0];
@@ -184,7 +110,7 @@
 
                     //yAxis formatter.
                     this.plot.yAxis().labels().format(function () {
-                        return anychart.format.number(this.value.toFixed(3), {
+                        return Anychart.format.number(this.value.toFixed(3), {
                             scale: false,
                             zeroFillDecimals: false,
                         });
@@ -195,7 +121,7 @@
                     //crosshair.xLabel(false).yLabel(false).yStroke(false).xStroke(false);
 
                     //vertical line(t1,t2);
-                    this.timeData = this.makeVerticalLine(this.plot, _next[30][0]);
+                    this.timeData = stockDataHelper.makeVerticalLine(this.plot, _next[30][0]);
                     console.log('[KES] timeData:', this.timeData);
 
                     //area series
@@ -236,7 +162,8 @@
                     let scroller = this.chart.scroller();
                     scroller.line(mapping);
                     scroller.xAxis(false);
-
+                    // scroller.allowRangeChange(false)
+                    // this.chart.scroller().enabled(false);
                     this.chart.container(this.$el);
                     this.chart.draw();
 
@@ -292,7 +219,7 @@
                     console.log('[KES] calculate _firstStreamTime:', this._firstStreamTime);
 
                     // build next data
-                    let _next = this.makeNextDate(this._lastVerticalLineTime, 60, 1);
+                    let _next = stockDataHelper.makeNextDate(this._lastVerticalLineTime, 60, 1);
                     this._lastVerticalLineTime = _next[_next.length - 1][0]
 
 
@@ -306,7 +233,7 @@
                     let t1 = new Date(time);
                     t1 = t1.setSeconds(t1.getSeconds() + 30);
 
-                    this.timeData = this.makeVerticalLine(this.plot, t1);
+                    this.timeData = stockDataHelper.makeVerticalLine(this.plot, t1);
 
                     //date range
                     this.chart.selectRange(this._firstStreamTime, this.timeData.calcualteTime + 1000 * 60);
@@ -367,7 +294,6 @@
                     streamButton.innerHTML = "Start" + "\nstream";
                 };
             }
-
         },
         //refactor
         computed: {
